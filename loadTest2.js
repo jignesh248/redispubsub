@@ -92,7 +92,7 @@ else {
         socketList.forEach((socket) => {
             let testChannel = socket.subscribe('match1');
 
-            testChannel.watch((data) => console.log('received msg %s %s', data, Date.now()));
+            testChannel.watch((data) => console.log('%s %s', data, Date.now()));
 
         });
 

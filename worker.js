@@ -66,10 +66,30 @@ class Worker extends SCWorker {
 			});
 
 			socket.on('error', function (data) {
-				console.log('error in (' + process.pid + "): ", data);
+				console.log('error in (' + process.pid + "): ");
       });
       
     });
+
+    scServer.on('connect', function(socket){
+      console.log("scServer connect event")
+    })
+
+    scServer.on('error', function(socket){
+      console.log("scServer error event")
+    })
+
+    scServer.on('disconnect', function(socket){
+      console.log("scServer disconnect event")
+    })
+
+    scServer.on('connectAbort', function(socket){
+      console.log("scServer connect event")
+    })
+
+    scServer.on('close', function(socket){
+      console.log("scServer connect event")
+    })
 
     redis.on('message', function (channel, message) {
       console.log('Received message %s from channel %s on server', message, channel);

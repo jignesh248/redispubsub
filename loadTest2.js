@@ -2,12 +2,13 @@ let argv = require('minimist')(process.argv.slice(2));
 let socketClusterClient = require('socketcluster-client');
 let cluster = require('cluster');
 let os = require('os');
+const delay = require('delay');
 
 let testCooldownDelay = Number(argv.cooldown || 5000);
 
 let serverHostname = argv.hostname || 'localhost';
 let serverPort = Number(argv.port || 8000);
-let numClients = Number(argv.clients || 1000);
+let numClients = Number( process.env.clients || 20000);
 // The test type.
 let test = argv.test || 'many-subscribers';
 
@@ -71,59 +72,21 @@ if (cluster.isMaster) {
 
 } 
 else {
-    let socketList = [];
 
-    for (let i = 0; i < numClientsPerCPU; i++) {
-        socketList.push(
-            socketClusterClient.connect({
+    (async () => {
+
+        for (let i = 0; i < numClientsPerCPU; i++) {
+            let test = await socketClusterClient.connect({
                 hostname: serverHostname,
                 port: serverPort,
-                multiplex: false,
-                autoConnect: false
+                multiplex: false
             })
-        );
-    }
-    socketList.forEach((socket) => {
-        socket.connect();
-    });
 
-    if (test === 'many-subscribers') {
+            let testChannel = test.subscribe('match1');
+	    testChannel.watch((data) => console.log('%s %s', data, Date.now()));
+	    await delay(25);
+        }
+    })();
 
-        socketList.forEach((socket) => {
-            let testChannel = socket.subscribe('match1');
-
-            testChannel.watch((data) => console.log('%s %s', data, Date.now()));
-
-        });
-
-        /*
-        let subscribePromises = [];
-
-        socketList.forEach((socket) => {
-          let testChannel = socket.subscribe('testChannel');
-          subscribePromises.push(
-            new Promise((resolve, reject) => {
-              testChannel.once('subscribe', () => {
-                testChannel.off('subscribeFail');
-                resolve();
-              });
-              testChannel.once('subscribeFail', (err) => {
-                testChannel.off('subscribe');
-                reject(err);
-              });
-            })
-          );
-        });
-        Promise.all(subscribePromises)
-        .then((results) => {
-          process.send({type: 'success'});
-        })
-        .catch((err) => {
-          process.send({type: 'error', message: err.message});
-        });
-      */
-    } 
-    else {
-        console.error(`No '${test}' test exists`);
-    }
+    
 }

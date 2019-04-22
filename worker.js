@@ -7,7 +7,6 @@ var healthChecker = require('sc-framework-health-check');
 const url = require('url');
 const Redis = require('ioredis');
 const redis = new Redis();
-const connections = process.env.connections || 1000
 
 redis.subscribe('match1', 'match2', 'match3', 'match4', 'match5', function (err, count) {
   if(err){
@@ -47,9 +46,7 @@ class Worker extends SCWorker {
       //console.log('new socket #' + socket.id + ' connected in (' + process.pid + ')');
       count += 1
       
-      if(count == connections){
-        console.log("all connected")
-      }
+      console.log(count + " connection")
 
       socket.on('disconnect', function (data) {
         console.log("one client disconnected")

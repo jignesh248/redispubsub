@@ -73,20 +73,20 @@ if (cluster.isMaster) {
 } 
 else {
 
-    (async () => {
+  (async () => {
 
-        for (let i = 0; i < numClientsPerCPU; i++) {
-            let test = await socketClusterClient.connect({
-                hostname: serverHostname,
-                port: serverPort,
-                multiplex: false
-            })
+    for (let i = 0; i < numClientsPerCPU; i++) {
+      let test = await socketClusterClient.connect({
+        hostname: serverHostname,
+        port: serverPort,
+        multiplex: false
+      });
 
-            let testChannel = test.subscribe('match1');
-	    testChannel.watch((data) => console.log('%s %s', data, Date.now()));
-	    await delay(25);
-        }
-    })();
+      let testChannel = test.subscribe('match1');
+      testChannel.watch((data) => console.log('%s %s', data, Date.now()));
+      await delay(25);
+    }
+  })();
 
     
 }

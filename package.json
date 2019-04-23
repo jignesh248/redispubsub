@@ -10,10 +10,11 @@
   ],
   "dependencies": {
     "connect": "3.6.6",
+    "delay": "^4.2.0",
     "express": "4.16.3",
     "ioredis": "^4.9.0",
     "minimist": "^1.1.0",
-    "morgan": "1.7.0",
+    "morgan": "^1.9.1",
     "sc-errors": "^1.4.1",
     "sc-framework-health-check": "^2.0.0",
     "sc-hot-reboot": "^1.0.0",
@@ -33,6 +34,6 @@
   "readmeFilename": "README.md",
   "scripts": {
     "start": "node server.js",
-    "start:docker": "node dockerwait.js && node ${SOCKETCLUSTER_MASTER_CONTROLLER:-server.js}"
+    "start:docker": "node dockerwait.js && node --max_old_space_size=16000 ${SOCKETCLUSTER_MASTER_CONTROLLER:-server.js}"
   }
 }

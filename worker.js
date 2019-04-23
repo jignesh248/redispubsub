@@ -44,28 +44,28 @@ class Worker extends SCWorker {
     scServer.on('connection', function (socket) {
 
       //console.log('new socket #' + socket.id + ' connected in (' + process.pid + ')');
-      count += 1
-      
-      console.log(count + " connection")
+      count += 1;
+
+      console.log(count + " connection");
 
       socket.on('disconnect', function (data) {
         console.log("one client disconnected")
       });
 
-			socket.on('message', function (event) {
+      socket.on('message', function (event) {
         //if(event && event["data"] && event["data"]["channel"] && event["data"]["channel"] == "ping"){
         //  console.log('message (' + process.pid + "): "+event.data.data);
         //}
-			});
-
-			socket.on('close', function (data) {
-				console.log('socket #' + socket.id + ' closed in (' + process.pid + "): ");
-			});
-
-			socket.on('error', function (data) {
-				console.log('error in (' + process.pid + "): ");
       });
-      
+
+      socket.on('close', function (data) {
+        console.log('socket #' + socket.id + ' closed in (' + process.pid + "): ");
+      });
+
+      socket.on('error', function (data) {
+        console.log('error in (' + process.pid + "): ");
+      });
+
     });
 
     scServer.on('connect', function(socket){
